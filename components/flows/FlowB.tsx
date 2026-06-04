@@ -5,6 +5,8 @@ import Button from '@/components/ui/Button'
 import Row from '@/components/ui/Row'
 import NotifCard from '@/components/ui/NotifCard'
 import StepDots from '@/components/ui/StepDots'
+import AnimatedCheck from '@/components/ui/AnimatedCheck'
+import CountUp from '@/components/ui/CountUp'
 
 const PRODUCTS = [
   {
@@ -63,37 +65,51 @@ function SectionLabel({ children, centered }: { children: React.ReactNode; cente
   return <p className={`text-label-sm text-muted uppercase mb-4 ${centered ? 'text-center' : ''}`}>{children}</p>
 }
 
+function ARow({ children, delay }: { children: React.ReactNode; delay: number }) {
+  return (
+    <div style={{ animation: `slideUp 0.35s ease forwards ${delay}s`, opacity: 0 }}>
+      {children}
+    </div>
+  )
+}
+
 // Screen 0 — Home
 function ScreenHome({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-col gap-4">
-      <div>
+      <div style={{ animation: 'slideUp 0.4s ease forwards', opacity: 0 }}>
         <SectionLabel>PlayMe · Idle Cash</SectionLabel>
         <p className="text-body-md text-muted mb-1">Wednesday, Jun 3</p>
         <p className="text-display text-ink">$47,840</p>
         <p className="text-body-md text-muted">across 4 accounts</p>
       </div>
 
-      <NotifCard
-        label="IDLE CASH DETECTED"
-        text="$3,200 has been sitting in checking for 45 days, earning almost nothing."
-        sub="Tap to see what it could be doing"
-        onClick={onNext}
-      />
+      <div style={{ animation: 'notifBounce 0.55s cubic-bezier(0.22,1,0.36,1) forwards 0.15s', opacity: 0 }}>
+        <NotifCard
+          label="IDLE CASH DETECTED"
+          text="$3,200 has been sitting in checking for 45 days, earning almost nothing."
+          sub="Tap to see what it could be doing"
+          onClick={onNext}
+        />
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-2">Account balances</p>
-        <Row label="Chase Checking" value="$4,210" valueVariant="mono" />
-        <Row label="High-Yield Pocket" value="$31,400" valueVariant="mono" />
-        <Row label="Savings" value="$12,230" valueVariant="mono" noBorder />
-      </Card>
+      <div style={{ animation: 'slideUp 0.35s ease forwards 0.3s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-2">Account balances</p>
+          <Row label="Chase Checking" value="$4,210" valueVariant="mono" />
+          <Row label="High-Yield Pocket" value="$31,400" valueVariant="mono" />
+          <Row label="Savings" value="$12,230" valueVariant="mono" noBorder />
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-2">Upcoming bills · covered</p>
-        <Row label="Rent · Jun 14" value="$1,800" valueVariant="mono" />
-        <Row label="Utilities + subs" value="$195" valueVariant="mono" />
-        <Row label="Buffer after bills" value="$2,215 safe" valueVariant="primary" noBorder />
-      </Card>
+      <div style={{ animation: 'slideUp 0.35s ease forwards 0.4s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-2">Upcoming bills · covered</p>
+          <Row label="Rent · Jun 14" value="$1,800" valueVariant="mono" />
+          <Row label="Utilities + subs" value="$195" valueVariant="mono" />
+          <Row label="Buffer after bills" value="$2,215 safe" valueVariant="primary" noBorder />
+        </Card>
+      </div>
     </div>
   )
 }
@@ -123,7 +139,6 @@ function ScreenAnalysis({ onNext }: { onNext: () => void }) {
         </p>
       </Card>
 
-      {/* Yield compare */}
       <div className="flex gap-3">
         <div className="flex-1 rounded-md border border-hairline bg-canvas p-3">
           <p className="text-label-sm text-muted uppercase mb-2">Earning now</p>
@@ -171,7 +186,7 @@ function ScreenChoose({
         </h1>
       </div>
 
-      {PRODUCTS.map(product => {
+      {PRODUCTS.map((product, i) => {
         const isSelected = selectedProduct === product.id
         const liqColors = liquidityColors[product.liquidityVariant]
         const annualGain = `+$${product.annual.toFixed(0)}`
@@ -180,11 +195,13 @@ function ScreenChoose({
           <button
             key={product.id}
             onClick={() => onSelect(product.id)}
-            className="w-full text-left rounded-lg shadow-card transition-all duration-150"
+            className="w-full text-left rounded-lg shadow-card transition-all duration-200 active:scale-[0.98]"
             style={{
               backgroundColor: isSelected ? '#EEF3FF' : '#FFFFFF',
               border: isSelected ? '2px solid #2D6BFF' : '1px solid #E5E9F0',
               padding: isSelected ? '15px' : '16px',
+              animation: `cardEntrance 0.4s ease forwards ${0.05 + i * 0.1}s`,
+              opacity: 0,
             }}
           >
             <div className="flex items-center justify-between mb-2">
@@ -215,7 +232,7 @@ function ScreenChoose({
             <p className="text-body-md text-muted">{product.note}</p>
 
             {isSelected && (
-              <div className="mt-3">
+              <div className="mt-3" style={{ animation: 'popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
                 <span className="px-2.5 py-1 rounded-full text-label-sm bg-primary text-white">Selected</span>
               </div>
             )}
@@ -278,16 +295,19 @@ function ScreenConfirm({
       <Card className="bg-soft border-0">
         <p className="text-label-sm text-muted uppercase mb-4">Projected earnings on $3,200</p>
         <div className="flex flex-col gap-3">
-          {projections.map(({ period, earn, width }) => (
-            <div key={period}>
+          {projections.map(({ period, earn, width }, i) => (
+            <div key={period} style={{ animation: `slideUp 0.3s ease forwards ${0.1 + i * 0.07}s`, opacity: 0 }}>
               <div className="flex justify-between items-baseline mb-1.5">
                 <span className="text-body-md text-muted">{period}</span>
                 <span className="font-mono text-primary-active text-mono-sm">+${earn}</span>
               </div>
               <div className="h-1 rounded-full bg-primary-dis">
                 <div
-                  className="h-1 rounded-full bg-primary transition-all duration-500"
-                  style={{ width: `${width}%` }}
+                  className="h-1 rounded-full bg-primary"
+                  style={{
+                    width: `${width}%`,
+                    transition: `width 0.6s cubic-bezier(0.22,1,0.36,1) ${0.2 + i * 0.1}s`,
+                  }}
                 />
               </div>
             </div>
@@ -307,53 +327,87 @@ function ScreenConfirm({
 // Screen 4 — Outcome
 function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string | null; onFinish: () => void }) {
   const product = PRODUCTS.find(p => p.id === selectedProduct) || PRODUCTS[0]
+  const annualInt = Math.round(product.annual)
+  const monthlyStr = (product.annual / 12).toFixed(2)
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center text-center">
-        <div className="w-[52px] h-[52px] rounded-full bg-soft flex items-center justify-center mb-4">
-          <span className="text-primary text-headline-lg font-bold">✓</span>
+        <div className="mb-4">
+          <AnimatedCheck />
         </div>
-        <SectionLabel centered>Placement confirmed</SectionLabel>
-        <h1 className="text-headline-lg text-ink">
-          Your money is<br />
-          <span className="text-primary">working now.</span>
-        </h1>
+        <div style={{ animation: 'fadeIn 0.3s ease forwards 0.6s', opacity: 0 }}>
+          <SectionLabel centered>Placement confirmed</SectionLabel>
+        </div>
+        <div style={{ animation: 'slideUp 0.35s ease forwards 0.65s', opacity: 0 }}>
+          <h1 className="text-headline-lg text-ink">
+            Your money is<br />
+            <span className="text-primary">working now.</span>
+          </h1>
+        </div>
       </div>
 
       {/* Win strip */}
-      <Card className="flex items-center gap-3">
-        <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
-        <div>
-          <p className="text-headline-md text-ink">$3,200 placed at {product.rate} APY</p>
-          <p className="text-body-md text-muted">Est. +${product.annual.toFixed(0)}/yr vs. ~$0.32/yr in checking</p>
-        </div>
-      </Card>
+      <div style={{ animation: 'slideInLeft 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.75s', opacity: 0 }}>
+        <Card className="flex items-center gap-3">
+          <span
+            className="w-2 h-2 rounded-full bg-success flex-shrink-0"
+            style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.9s', opacity: 0 }}
+          />
+          <div>
+            <p className="text-headline-md text-ink">
+              $3,200 placed at {product.rate} APY
+            </p>
+            <p className="text-body-md text-muted">
+              Est. +$<CountUp to={annualInt} duration={800} delay={900} />/yr vs. ~$0.32/yr in checking
+            </p>
+          </div>
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-1">Placement details</p>
-        <Row label="Product" value={product.name} />
-        <Row label="Amount placed" value="$3,200" valueVariant="mono" />
-        <Row label="APY" value={product.rate} valueVariant="primary" />
-        <Row label="First interest credit" value="Jul 3, 2026" />
-        <Row label="Checking balance" value="$1,010 · covered" noBorder />
-      </Card>
+      {/* Placement details — staggered */}
+      <div style={{ animation: 'cardEntrance 0.4s ease forwards 0.85s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-1">Placement details</p>
+          {[
+            { label: 'Product',              value: product.name,        variant: 'default' as const },
+            { label: 'Amount placed',        value: '$3,200',            variant: 'mono'    as const },
+            { label: 'APY',                  value: product.rate,        variant: 'primary' as const },
+            { label: 'First interest credit',value: 'Jul 3, 2026',       variant: 'default' as const },
+            { label: 'Checking balance',     value: '$1,010 · covered',  variant: 'default' as const },
+          ].map((row, i) => (
+            <ARow key={row.label} delay={0.9 + i * 0.06}>
+              <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 4} />
+            </ARow>
+          ))}
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-1">What happens next</p>
-        <Row label="Jul 3 — first interest" value={`+$${(product.annual / 12).toFixed(2)}`} valueVariant="green" />
-        <Row label="Jun 14 — rent auto-pay" value="from checking ✓" />
-        <Row label="Jun 25 — next paycheck" value="checking replenished" noBorder />
-      </Card>
+      {/* What happens next — staggered */}
+      <div style={{ animation: 'cardEntrance 0.4s ease forwards 1.1s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-1">What happens next</p>
+          {[
+            { label: 'Jul 3 — first interest',   value: `+$${monthlyStr}`,            variant: 'green'   as const },
+            { label: 'Jun 14 — rent auto-pay',   value: 'from checking ✓',            variant: 'default' as const },
+            { label: 'Jun 25 — next paycheck',   value: 'checking replenished',       variant: 'default' as const },
+          ].map((row, i) => (
+            <ARow key={row.label} delay={1.15 + i * 0.06}>
+              <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 2} />
+            </ARow>
+          ))}
+        </Card>
+      </div>
 
-      <Button variant="primary" label="Back to home" onClick={onFinish} />
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.35s', opacity: 0 }}>
+        <Button variant="primary" label="Back to home" onClick={onFinish} />
+      </div>
     </div>
   )
 }
 
 export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectProduct, onFinish }: FlowBProps) {
   const handleGoToStep2Back = () => {
-    // When user taps "Change product" on confirm screen, go back to product selection
     onBack()
   }
 
@@ -367,7 +421,6 @@ export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectP
 
   return (
     <div className="flex flex-col min-h-screen bg-canvas">
-      {/* Header */}
       <div className="flex items-center justify-between px-container pt-12 pb-4">
         <div className="flex items-center gap-2">
           {step > 0 && (
@@ -380,7 +433,6 @@ export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectP
         <StepDots total={5} current={step} />
       </div>
 
-      {/* Content */}
       <div className="flex-1 px-container pb-8 overflow-y-auto">
         {screens[step]}
       </div>

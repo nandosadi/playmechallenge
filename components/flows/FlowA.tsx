@@ -6,6 +6,8 @@ import Row from '@/components/ui/Row'
 import NotifCard from '@/components/ui/NotifCard'
 import Toggle from '@/components/ui/Toggle'
 import StepDots from '@/components/ui/StepDots'
+import AnimatedCheck from '@/components/ui/AnimatedCheck'
+import CountUp from '@/components/ui/CountUp'
 
 interface FlowAProps {
   step: number
@@ -16,40 +18,55 @@ interface FlowAProps {
   onFinish: () => void
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="text-label-sm text-muted uppercase mb-4">{children}</p>
+function SectionLabel({ children, centered }: { children: React.ReactNode; centered?: boolean }) {
+  return <p className={`text-label-sm text-muted uppercase mb-4 ${centered ? 'text-center' : ''}`}>{children}</p>
+}
+
+// Staggered animated row wrapper
+function ARow({ children, delay }: { children: React.ReactNode; delay: number }) {
+  return (
+    <div style={{ animation: `slideUp 0.35s ease forwards ${delay}s`, opacity: 0 }}>
+      {children}
+    </div>
+  )
 }
 
 // Screen 0 — Home
 function ScreenHome({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-col gap-4">
-      <div>
+      <div style={{ animation: 'slideUp 0.4s ease forwards', opacity: 0 }}>
         <SectionLabel>PlayMe · Mission Engine</SectionLabel>
         <p className="text-body-md text-muted mb-1">Wednesday, Jun 3 · 2:14 PM</p>
         <p className="text-display text-ink">$47,840</p>
         <p className="text-body-md text-muted">across 4 accounts</p>
       </div>
 
-      <NotifCard
-        label="OPTIMIZATION MISSION READY"
-        text="You're about to pay your electricity bill. There's a smarter way to do this."
-        sub="Tap to see system recommendation"
-        onClick={onNext}
-      />
+      <div style={{ animation: 'notifBounce 0.55s cubic-bezier(0.22,1,0.36,1) forwards 0.15s', opacity: 0 }}>
+        <NotifCard
+          label="OPTIMIZATION MISSION READY"
+          text="You're about to pay your electricity bill. There's a smarter way to do this."
+          sub="Tap to see system recommendation"
+          onClick={onNext}
+        />
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-2">Active goals</p>
-        <Row label="Home down payment" value="61% · Mar 2027" valueVariant="primary" />
-        <Row label="Barcelona trip" value="71% · Nov 2026" noBorder />
-      </Card>
+      <div style={{ animation: 'slideUp 0.35s ease forwards 0.3s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-2">Active goals</p>
+          <Row label="Home down payment" value="61% · Mar 2027" valueVariant="primary" />
+          <Row label="Barcelona trip" value="71% · Nov 2026" noBorder />
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-2">Upcoming payments</p>
-        <Row label="Electricity bill" value="$148 · Jun 6" valueVariant="mono" />
-        <Row label="Rent" value="$1,800 · Jun 14" valueVariant="mono" />
-        <Row label="Subscriptions" value="$47 · Jun 18" valueVariant="mono" noBorder />
-      </Card>
+      <div style={{ animation: 'slideUp 0.35s ease forwards 0.4s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-2">Upcoming payments</p>
+          <Row label="Electricity bill" value="$148 · Jun 6" valueVariant="mono" />
+          <Row label="Rent" value="$1,800 · Jun 14" valueVariant="mono" />
+          <Row label="Subscriptions" value="$47 · Jun 18" valueVariant="mono" noBorder />
+        </Card>
+      </div>
     </div>
   )
 }
@@ -66,14 +83,12 @@ function ScreenIntercept({ onNext, onApply }: { onNext: () => void; onApply: () 
         </h1>
       </div>
 
-      {/* Promo card — full primary blue */}
       <div className="rounded-lg p-4 bg-primary text-white">
         <p className="text-label-sm uppercase mb-2" style={{ color: 'rgba(255,255,255,0.7)' }}>System recommendation</p>
         <p className="text-headline-md font-semibold mb-2">Pay with Rewards Card ending 4821, not your checking account.</p>
         <p className="text-body-md" style={{ color: 'rgba(255,255,255,0.8)' }}>Earn 3x points on utilities. Keep checking buffer intact. Goal stays on track.</p>
       </div>
 
-      {/* Compare grid */}
       <div className="flex gap-3">
         <div className="flex-1 rounded-md border border-hairline bg-canvas p-3">
           <p className="text-label-sm text-muted uppercase mb-2">Your plan</p>
@@ -87,7 +102,6 @@ function ScreenIntercept({ onNext, onApply }: { onNext: () => void; onApply: () 
         </div>
       </div>
 
-      {/* Tags */}
       <div className="flex flex-wrap gap-2">
         {['3x utility points', 'buffer preserved', 'goal on track'].map(tag => (
           <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-soft text-primary text-label-sm">
@@ -192,7 +206,6 @@ function ScreenConfirm({ ruleEnabled, onToggleRule, onConfirm, onPayFromChecking
         <Row label="Checking buffer after" value="$4,210 (unchanged)" noBorder />
       </Card>
 
-      {/* Trust card — navy */}
       <Card navy>
         <p className="text-headline-md font-semibold text-white mb-2">Save as rule</p>
         <p className="text-body-md mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
@@ -230,43 +243,75 @@ function ScreenConfirm({ ruleEnabled, onToggleRule, onConfirm, onPayFromChecking
 function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
   return (
     <div className="flex flex-col gap-4">
+      {/* Animated header */}
       <div className="flex flex-col items-center text-center">
-        <div className="w-[52px] h-[52px] rounded-full bg-soft flex items-center justify-center mb-4">
-          <span className="text-primary text-headline-lg font-bold">✓</span>
+        <div className="mb-4">
+          <AnimatedCheck />
         </div>
-        <SectionLabel>Mission complete</SectionLabel>
-        <h1 className="text-headline-lg text-ink">
-          Payment made.<br />
-          <span className="text-primary">Rewards captured.</span>
-        </h1>
+        <div style={{ animation: 'fadeIn 0.3s ease forwards 0.6s', opacity: 0 }}>
+          <SectionLabel centered>Mission complete</SectionLabel>
+        </div>
+        <div style={{ animation: 'slideUp 0.35s ease forwards 0.65s', opacity: 0 }}>
+          <h1 className="text-headline-lg text-ink">
+            Payment made.<br />
+            <span className="text-primary">Rewards captured.</span>
+          </h1>
+        </div>
       </div>
 
-      {/* Win strip */}
-      <Card className="flex items-center gap-3">
-        <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" />
-        <div>
-          <p className="text-headline-md text-ink">+444 points earned</p>
-          <p className="text-body-md text-muted">~$6.66 value · 3x on utilities</p>
-        </div>
-      </Card>
+      {/* Win strip — slides in from left */}
+      <div style={{ animation: 'slideInLeft 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.75s', opacity: 0 }}>
+        <Card className="flex items-center gap-3">
+          <span
+            className="w-2 h-2 rounded-full bg-success flex-shrink-0"
+            style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.9s', opacity: 0 }}
+          />
+          <div>
+            <p className="text-headline-md text-ink">
+              +<CountUp to={444} duration={800} delay={900} /> points earned
+            </p>
+            <p className="text-body-md text-muted">~$6.66 value · 3x on utilities</p>
+          </div>
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-1">Payment summary</p>
-        <Row label="Electricity · Jun 3" value="$148.00" valueVariant="mono" />
-        <Row label="Paid with" value="Rewards Card · 4821" />
-        <Row label="Points earned" value="444 pts" valueVariant="primary" />
-        <Row label="Checking buffer" value="$4,210 · intact" />
-        <Row label="Down payment goal" value="On track ↑" valueVariant="green" noBorder />
-      </Card>
+      {/* Payment summary — staggered rows */}
+      <div style={{ animation: 'cardEntrance 0.4s ease forwards 0.85s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-1">Payment summary</p>
+          {[
+            { label: 'Electricity · Jun 3', value: '$148.00',          variant: 'mono'    as const },
+            { label: 'Paid with',           value: 'Rewards Card · 4821', variant: 'default' as const },
+            { label: 'Points earned',       value: '444 pts',          variant: 'primary' as const },
+            { label: 'Checking buffer',     value: '$4,210 · intact',  variant: 'default' as const },
+            { label: 'Down payment goal',   value: 'On track ↑',       variant: 'green'   as const },
+          ].map((row, i) => (
+            <ARow key={row.label} delay={0.9 + i * 0.06}>
+              <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 4} />
+            </ARow>
+          ))}
+        </Card>
+      </div>
 
-      <Card>
-        <p className="text-label-sm text-muted uppercase mb-1">Running totals · this month</p>
-        <Row label="Total points via PlayMe" value="1,280 pts" valueVariant="primary" />
-        <Row label="Est. annual rewards value" value="~$80" valueVariant="primary" />
-        <Row label="Optimization missions run" value="7 this month" noBorder />
-      </Card>
+      {/* Running totals — staggered rows */}
+      <div style={{ animation: 'cardEntrance 0.4s ease forwards 1.1s', opacity: 0 }}>
+        <Card>
+          <p className="text-label-sm text-muted uppercase mb-1">Running totals · this month</p>
+          {[
+            { label: 'Total points via PlayMe',   value: '1,280 pts', variant: 'primary' as const },
+            { label: 'Est. annual rewards value', value: '~$80',      variant: 'primary' as const },
+            { label: 'Optimization missions run', value: '7 this month', variant: 'default' as const },
+          ].map((row, i) => (
+            <ARow key={row.label} delay={1.15 + i * 0.06}>
+              <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 2} />
+            </ARow>
+          ))}
+        </Card>
+      </div>
 
-      <Button variant="primary" label="Back to home" onClick={onFinish} />
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.35s', opacity: 0 }}>
+        <Button variant="primary" label="Back to home" onClick={onFinish} />
+      </div>
     </div>
   )
 }
@@ -288,7 +333,6 @@ export default function FlowA({ step, ruleEnabled, onNext, onBack, onToggleRule,
 
   return (
     <div className="flex flex-col min-h-screen bg-canvas">
-      {/* Header */}
       <div className="flex items-center justify-between px-container pt-12 pb-4">
         <div className="flex items-center gap-2">
           {step > 0 && (
@@ -301,7 +345,6 @@ export default function FlowA({ step, ruleEnabled, onNext, onBack, onToggleRule,
         <StepDots total={5} current={step} />
       </div>
 
-      {/* Content */}
       <div className="flex-1 px-container pb-8 overflow-y-auto">
         {screens[step]}
       </div>
