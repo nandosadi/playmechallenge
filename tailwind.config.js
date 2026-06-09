@@ -23,6 +23,8 @@ module.exports = {
         'hairline-soft':  '#EEF0F4',
         success:          '#3CCB7F',
         error:            '#E5484D',
+        clementine:       '#FF6B2B',
+        'clementine-soft':'#FFF1EB',
       },
       borderRadius: {
         sm:   '8px',

@@ -3,49 +3,16 @@
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Row from '@/components/ui/Row'
-import NotifCard from '@/components/ui/NotifCard'
 import StepDots from '@/components/ui/StepDots'
 import AnimatedCheck from '@/components/ui/AnimatedCheck'
 import CountUp from '@/components/ui/CountUp'
 
 const PRODUCTS = [
-  {
-    id: 'hysa',
-    name: 'High-Yield Savings',
-    rate: '4.85%',
-    liquidity: 'Instant',
-    liquidityVariant: 'green' as const,
-    risk: 'No risk',
-    protection: 'FDIC insured',
-    note: 'Fully liquid any time. Best for cash you might need soon.',
-    annual: 155.20,
-  },
-  {
-    id: 'cd',
-    name: 'No-Penalty CD',
-    rate: '5.10%',
-    liquidity: '7-day exit',
-    liquidityVariant: 'amber' as const,
-    risk: 'No risk',
-    protection: 'FDIC insured',
-    note: 'Slightly better rate. Exit after 7 days with no penalty.',
-    annual: 163.20,
-  },
-  {
-    id: 'tbill',
-    name: 'T-Bill (3-month)',
-    rate: '5.28%',
-    liquidity: 'Locked 90d',
-    liquidityVariant: 'red' as const,
-    risk: 'No risk',
-    protection: "Gov't backed",
-    note: 'Best rate. US government backed. Locked until Sep 1.',
-    annual: 168.96,
-  },
+  { id: 'hysa', name: 'High-Yield Savings', rate: '4.85%', liquidity: 'Instant',   liquidityVariant: 'green' as const, risk: 'No risk', protection: 'FDIC insured', note: 'Fully liquid any time. Best for cash you might need soon.', annual: 155.20 },
+  { id: 'cd',   name: 'No-Penalty CD',      rate: '5.10%', liquidity: '7-day exit', liquidityVariant: 'amber' as const, risk: 'No risk', protection: 'FDIC insured', note: 'Slightly better rate. Exit after 7 days with no penalty.', annual: 163.20 },
+  { id: 'tbill',name: 'T-Bill (3-month)',   rate: '5.28%', liquidity: 'Locked 90d', liquidityVariant: 'red'   as const, risk: 'No risk', protection: "Gov't backed",  note: 'Best rate. US government backed. Locked until Sep 1.',    annual: 168.96 },
 ]
-
 const AMOUNT = 3200
-
 const liquidityColors = {
   green: { bg: '#EBF9F1', text: '#1A7A47' },
   amber: { bg: '#FFF7ED', text: '#B45309' },
@@ -53,7 +20,7 @@ const liquidityColors = {
 }
 
 interface FlowBProps {
-  step: number
+  step: number   // 0=Analysis, 1=Choose, 2=Confirm, 3=Outcome
   selectedProduct: string | null
   onNext: () => void
   onBack: () => void
@@ -66,66 +33,17 @@ function SectionLabel({ children, centered }: { children: React.ReactNode; cente
 }
 
 function ARow({ children, delay }: { children: React.ReactNode; delay: number }) {
-  return (
-    <div style={{ animation: `slideUp 0.35s ease forwards ${delay}s`, opacity: 0 }}>
-      {children}
-    </div>
-  )
+  return <div style={{ animation: `slideUp 0.35s ease forwards ${delay}s`, opacity: 0 }}>{children}</div>
 }
 
-// Screen 0 — Home
-function ScreenHome({ onNext }: { onNext: () => void }) {
-  return (
-    <div className="flex flex-col gap-4">
-      <div style={{ animation: 'slideUp 0.4s ease forwards', opacity: 0 }}>
-        <SectionLabel>PlayMe · Idle Cash</SectionLabel>
-        <p className="text-body-md text-muted mb-1">Wednesday, Jun 3</p>
-        <p className="text-display text-ink">$47,840</p>
-        <p className="text-body-md text-muted">across 4 accounts</p>
-      </div>
-
-      <div style={{ animation: 'notifBounce 0.55s cubic-bezier(0.22,1,0.36,1) forwards 0.15s', opacity: 0 }}>
-        <NotifCard
-          label="IDLE CASH DETECTED"
-          text="$3,200 has been sitting in checking for 45 days, earning almost nothing."
-          sub="Tap to see what it could be doing"
-          onClick={onNext}
-        />
-      </div>
-
-      <div style={{ animation: 'slideUp 0.35s ease forwards 0.3s', opacity: 0 }}>
-        <Card>
-          <p className="text-label-sm text-muted uppercase mb-2">Account balances</p>
-          <Row label="Chase Checking" value="$4,210" valueVariant="mono" />
-          <Row label="High-Yield Pocket" value="$31,400" valueVariant="mono" />
-          <Row label="Savings" value="$12,230" valueVariant="mono" noBorder />
-        </Card>
-      </div>
-
-      <div style={{ animation: 'slideUp 0.35s ease forwards 0.4s', opacity: 0 }}>
-        <Card>
-          <p className="text-label-sm text-muted uppercase mb-2">Upcoming bills · covered</p>
-          <Row label="Rent · Jun 14" value="$1,800" valueVariant="mono" />
-          <Row label="Utilities + subs" value="$195" valueVariant="mono" />
-          <Row label="Buffer after bills" value="$2,215 safe" valueVariant="primary" noBorder />
-        </Card>
-      </div>
-    </div>
-  )
-}
-
-// Screen 1 — Analysis
+// Step 0 — Analysis
 function ScreenAnalysis({ onNext }: { onNext: () => void }) {
   const opportunityCost = ((AMOUNT * 0.0485) / 365 * 45).toFixed(2)
-
   return (
     <div className="flex flex-col gap-4">
       <div>
         <SectionLabel>Idle cash analysis</SectionLabel>
-        <h1 className="text-headline-lg text-ink">
-          <span className="text-primary">$3,200 sitting still</span><br />
-          for 45 days.
-        </h1>
+        <h1 className="text-headline-lg text-ink"><span className="text-primary">$3,200 sitting still</span><br />for 45 days.</h1>
       </div>
 
       <Card>
@@ -134,9 +52,7 @@ function ScreenAnalysis({ onNext }: { onNext: () => void }) {
           <p className="text-display text-ink">${opportunityCost}</p>
           <p className="text-body-md text-muted">in 45 days</p>
         </div>
-        <p className="text-body-md text-muted">
-          At 4.85% APY, this money could have earned ${opportunityCost}. Instead it earned ~$0.14 in checking.
-        </p>
+        <p className="text-body-md text-muted">At 4.85% APY, this money could have earned ${opportunityCost}. Instead it earned ~$0.14 in checking.</p>
       </Card>
 
       <div className="flex gap-3">
@@ -164,44 +80,27 @@ function ScreenAnalysis({ onNext }: { onNext: () => void }) {
   )
 }
 
-// Screen 2 — Choose product
-function ScreenChoose({
-  selectedProduct,
-  onSelect,
-  onNext,
-}: {
-  selectedProduct: string | null
-  onSelect: (id: string) => void
-  onNext: () => void
-}) {
+// Step 1 — Choose product
+function ScreenChoose({ selectedProduct, onSelect, onNext }: { selectedProduct: string | null; onSelect: (id: string) => void; onNext: () => void }) {
   const selected = PRODUCTS.find(p => p.id === selectedProduct)
-
   return (
     <div className="flex flex-col gap-4">
       <div>
         <SectionLabel>Choose a destination</SectionLabel>
-        <h1 className="text-headline-lg text-ink">
-          Pick how hard<br />
-          <span className="text-primary">$3,200 works.</span>
-        </h1>
+        <h1 className="text-headline-lg text-ink">Pick how hard<br /><span className="text-primary">$3,200 works.</span></h1>
       </div>
 
       {PRODUCTS.map((product, i) => {
         const isSelected = selectedProduct === product.id
         const liqColors = liquidityColors[product.liquidityVariant]
-        const annualGain = `+$${product.annual.toFixed(0)}`
-
         return (
-          <button
-            key={product.id}
-            onClick={() => onSelect(product.id)}
+          <button key={product.id} onClick={() => onSelect(product.id)}
             className="w-full text-left rounded-lg shadow-card transition-all duration-200 active:scale-[0.98]"
             style={{
               backgroundColor: isSelected ? '#EEF3FF' : '#FFFFFF',
               border: isSelected ? '2px solid #2D6BFF' : '1px solid #E5E9F0',
               padding: isSelected ? '15px' : '16px',
-              animation: `cardEntrance 0.4s ease forwards ${0.05 + i * 0.1}s`,
-              opacity: 0,
+              animation: `cardEntrance 0.4s ease forwards ${0.05 + i * 0.1}s`, opacity: 0,
             }}
           >
             <div className="flex items-center justify-between mb-2">
@@ -211,26 +110,16 @@ function ScreenChoose({
                 <span className="text-headline-md text-primary font-bold">{product.rate}</span>
               </div>
             </div>
-
             <div className="flex flex-wrap gap-1.5 mb-2">
-              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: liqColors.bg, color: liqColors.text }}>
-                {product.liquidity}
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-label-sm bg-hairline-soft text-muted">
-                {product.risk}
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: '#EBF9F1', color: '#1A7A47' }}>
-                {product.protection}
-              </span>
+              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: liqColors.bg, color: liqColors.text }}>{product.liquidity}</span>
+              <span className="px-2 py-0.5 rounded-full text-label-sm bg-hairline-soft text-muted">{product.risk}</span>
+              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: '#EBF9F1', color: '#1A7A47' }}>{product.protection}</span>
             </div>
-
             <div className="flex items-center justify-between mb-2">
               <span className="text-body-md text-muted">Est. gain on $3,200/yr</span>
-              <span className="text-headline-md text-primary font-bold">{annualGain}</span>
+              <span className="text-headline-md text-primary font-bold">+${product.annual.toFixed(0)}</span>
             </div>
-
             <p className="text-body-md text-muted">{product.note}</p>
-
             {isSelected && (
               <div className="mt-3" style={{ animation: 'popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
                 <span className="px-2.5 py-1 rounded-full text-label-sm bg-primary text-white">Selected</span>
@@ -241,45 +130,26 @@ function ScreenChoose({
       })}
 
       <p className="text-body-md text-muted text-center">All three keep your money safe — the tradeoff is liquidity vs. rate.</p>
-
-      <Button
-        variant="primary"
-        label={selected ? `Continue with ${selected.name}` : 'Select a product to continue'}
-        onClick={onNext}
-        disabled={!selectedProduct}
-      />
+      <Button variant="primary" label={selected ? `Continue with ${selected.name}` : 'Select a product to continue'} onClick={onNext} disabled={!selectedProduct} />
     </div>
   )
 }
 
-// Screen 3 — Confirm
-function ScreenConfirm({
-  selectedProduct,
-  onConfirm,
-  onChangeProduct,
-}: {
-  selectedProduct: string | null
-  onConfirm: () => void
-  onChangeProduct: () => void
-}) {
+// Step 2 — Confirm
+function ScreenConfirm({ selectedProduct, onConfirm, onChangeProduct }: { selectedProduct: string | null; onConfirm: () => void; onChangeProduct: () => void }) {
   const product = PRODUCTS.find(p => p.id === selectedProduct) || PRODUCTS[0]
   const annual = product.annual
-
   const projections = [
-    { period: '1 month',   earn: (annual / 12).toFixed(2),  width: 8 },
-    { period: '3 months',  earn: (annual / 4).toFixed(2),   width: 25 },
-    { period: '6 months',  earn: (annual / 2).toFixed(2),   width: 50 },
-    { period: '12 months', earn: annual.toFixed(2),          width: 100 },
+    { period: '1 month',   earn: (annual / 12).toFixed(2), width: 8 },
+    { period: '3 months',  earn: (annual / 4).toFixed(2),  width: 25 },
+    { period: '6 months',  earn: (annual / 2).toFixed(2),  width: 50 },
+    { period: '12 months', earn: annual.toFixed(2),         width: 100 },
   ]
-
   return (
     <div className="flex flex-col gap-4">
       <div>
         <SectionLabel>Confirm placement</SectionLabel>
-        <h1 className="text-headline-lg text-ink">
-          $3,200 →<br />
-          <span className="text-primary">{product.name}.</span>
-        </h1>
+        <h1 className="text-headline-lg text-ink">$3,200 →<br /><span className="text-primary">{product.name}.</span></h1>
       </div>
 
       <Card>
@@ -302,13 +172,7 @@ function ScreenConfirm({
                 <span className="font-mono text-primary-active text-mono-sm">+${earn}</span>
               </div>
               <div className="h-1 rounded-full bg-primary-dis">
-                <div
-                  className="h-1 rounded-full bg-primary"
-                  style={{
-                    width: `${width}%`,
-                    transition: `width 0.6s cubic-bezier(0.22,1,0.36,1) ${0.2 + i * 0.1}s`,
-                  }}
-                />
+                <div className="h-1 rounded-full bg-primary" style={{ width: `${width}%`, transition: `width 0.6s cubic-bezier(0.22,1,0.36,1) ${0.2 + i * 0.1}s` }} />
               </div>
             </div>
           ))}
@@ -324,57 +188,42 @@ function ScreenConfirm({
   )
 }
 
-// Screen 4 — Outcome
+// Step 3 — Outcome
 function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string | null; onFinish: () => void }) {
   const product = PRODUCTS.find(p => p.id === selectedProduct) || PRODUCTS[0]
   const annualInt = Math.round(product.annual)
-  const monthlyStr = (product.annual / 12).toFixed(2)
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center text-center">
-        <div className="mb-4">
-          <AnimatedCheck />
-        </div>
+        <div className="mb-4"><AnimatedCheck /></div>
         <div style={{ animation: 'fadeIn 0.3s ease forwards 0.6s', opacity: 0 }}>
           <SectionLabel centered>Placement confirmed</SectionLabel>
         </div>
         <div style={{ animation: 'slideUp 0.35s ease forwards 0.65s', opacity: 0 }}>
-          <h1 className="text-headline-lg text-ink">
-            Your money is<br />
-            <span className="text-primary">working now.</span>
-          </h1>
+          <h1 className="text-headline-lg text-ink">Your money is<br /><span className="text-primary">working now.</span></h1>
         </div>
       </div>
 
-      {/* Win strip */}
       <div style={{ animation: 'slideInLeft 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.75s', opacity: 0 }}>
         <Card className="flex items-center gap-3">
-          <span
-            className="w-2 h-2 rounded-full bg-success flex-shrink-0"
-            style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.9s', opacity: 0 }}
-          />
+          <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.9s', opacity: 0 }} />
           <div>
-            <p className="text-headline-md text-ink">
-              $3,200 placed at {product.rate} APY
-            </p>
-            <p className="text-body-md text-muted">
-              Est. +$<CountUp to={annualInt} duration={800} delay={900} />/yr vs. ~$0.32/yr in checking
-            </p>
+            <p className="text-headline-md text-ink">$3,200 placed at {product.rate} APY</p>
+            <p className="text-body-md text-muted">Est. +$<CountUp to={annualInt} duration={800} delay={900} />/yr vs. ~$0.32/yr in checking</p>
           </div>
         </Card>
       </div>
 
-      {/* Placement details — staggered */}
       <div style={{ animation: 'cardEntrance 0.4s ease forwards 0.85s', opacity: 0 }}>
         <Card>
           <p className="text-label-sm text-muted uppercase mb-1">Placement details</p>
           {[
-            { label: 'Product',              value: product.name,        variant: 'default' as const },
-            { label: 'Amount placed',        value: '$3,200',            variant: 'mono'    as const },
-            { label: 'APY',                  value: product.rate,        variant: 'primary' as const },
-            { label: 'First interest credit',value: 'Jul 3, 2026',       variant: 'default' as const },
-            { label: 'Checking balance',     value: '$1,010 · covered',  variant: 'default' as const },
+            { label: 'Product',              value: product.name,       variant: 'default' as const },
+            { label: 'Amount placed',        value: '$3,200',           variant: 'mono'    as const },
+            { label: 'APY',                  value: product.rate,       variant: 'primary' as const },
+            { label: 'First interest credit',value: 'Jul 3, 2026',      variant: 'default' as const },
+            { label: 'Checking balance',     value: '$1,010 · covered', variant: 'default' as const },
           ].map((row, i) => (
             <ARow key={row.label} delay={0.9 + i * 0.06}>
               <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 4} />
@@ -383,14 +232,13 @@ function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string 
         </Card>
       </div>
 
-      {/* What happens next — staggered */}
       <div style={{ animation: 'cardEntrance 0.4s ease forwards 1.1s', opacity: 0 }}>
         <Card>
           <p className="text-label-sm text-muted uppercase mb-1">What happens next</p>
           {[
-            { label: 'Jul 3 — first interest',   value: `+$${monthlyStr}`,            variant: 'green'   as const },
-            { label: 'Jun 14 — rent auto-pay',   value: 'from checking ✓',            variant: 'default' as const },
-            { label: 'Jun 25 — next paycheck',   value: 'checking replenished',       variant: 'default' as const },
+            { label: 'Jul 3 — first interest', value: `+$${(product.annual / 12).toFixed(2)}`, variant: 'green'   as const },
+            { label: 'Jun 14 — rent auto-pay', value: 'from checking ✓',                      variant: 'default' as const },
+            { label: 'Jun 25 — next paycheck', value: 'checking replenished',                  variant: 'default' as const },
           ].map((row, i) => (
             <ARow key={row.label} delay={1.15 + i * 0.06}>
               <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 2} />
@@ -407,32 +255,22 @@ function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string 
 }
 
 export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectProduct, onFinish }: FlowBProps) {
-  const handleGoToStep2Back = () => {
-    onBack()
-  }
-
   const screens = [
-    <ScreenHome key="home" onNext={onNext} />,
     <ScreenAnalysis key="analysis" onNext={onNext} />,
     <ScreenChoose key="choose" selectedProduct={selectedProduct} onSelect={onSelectProduct} onNext={onNext} />,
-    <ScreenConfirm key="confirm" selectedProduct={selectedProduct} onConfirm={onNext} onChangeProduct={handleGoToStep2Back} />,
+    <ScreenConfirm key="confirm" selectedProduct={selectedProduct} onConfirm={onNext} onChangeProduct={onBack} />,
     <ScreenOutcome key="outcome" selectedProduct={selectedProduct} onFinish={onFinish} />,
   ]
 
   return (
     <div className="flex flex-col min-h-screen bg-canvas">
       <div className="flex items-center justify-between px-container pt-12 pb-4">
-        <div className="flex items-center gap-2">
-          {step > 0 && (
-            <button onClick={onBack} className="text-muted text-body-lg p-1 -ml-1">
-              ←
-            </button>
-          )}
-          <span className="text-label-sm text-muted uppercase tracking-wider">PlayMe</span>
-        </div>
-        <StepDots total={5} current={step} />
+        <button onClick={onBack} className="flex items-center gap-1.5" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8L10 12" stroke="#6B7280" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <span className="text-body-md text-muted">Home</span>
+        </button>
+        <StepDots total={4} current={step} />
       </div>
-
       <div className="flex-1 px-container pb-8 overflow-y-auto">
         {screens[step]}
       </div>
