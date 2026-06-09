@@ -53,6 +53,39 @@ export default function RootLayout({
         <meta name="theme-color" content="#2D6BFF" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="manifest" href="/manifest.json" />
+        <style>{`
+          @keyframes slideUp {
+            from { transform: translateY(14px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+          }
+          @keyframes slideInLeft {
+            from { transform: translateX(-18px); opacity: 0; }
+            to   { transform: translateX(0);     opacity: 1; }
+          }
+          @keyframes notifBounce {
+            0%   { transform: translateY(16px); opacity: 0; }
+            65%  { transform: translateY(-4px); opacity: 1; }
+            82%  { transform: translateY(2px);  opacity: 1; }
+            100% { transform: translateY(0);    opacity: 1; }
+          }
+          @keyframes popIn {
+            0%   { transform: scale(0.4);  opacity: 0; }
+            55%  { transform: scale(1.15); opacity: 1; }
+            75%  { transform: scale(0.95); opacity: 1; }
+            100% { transform: scale(1);    opacity: 1; }
+          }
+          @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+          }
+          @keyframes cardEntrance {
+            from { transform: translateY(20px) scale(0.98); opacity: 0; }
+            to   { transform: translateY(0)    scale(1);    opacity: 1; }
+          }
+        `}</style>
       </head>
       <body className={`${inter.className} bg-canvas`}>
         {children}

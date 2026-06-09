@@ -226,23 +226,54 @@ export default function HomeTab({ onStartFlowA, onStartFlowB }: HomeTabProps) {
           <div style={{ animation: 'notifBounce 0.5s cubic-bezier(0.22,1,0.36,1) forwards 0.2s', opacity: 0, marginBottom: 10 }}>
             <button
               onClick={onStartFlowA}
-              className="w-full text-left bg-card shadow-card active:scale-[0.99] transition-transform"
-              style={{ borderRadius: '0 16px 16px 0', borderLeft: '3px solid #2D6BFF', border: '1px solid #E5E9F0', borderLeftColor: '#2D6BFF', borderLeftWidth: 3 }}
+              className="w-full text-left bg-card shadow-card active:scale-[0.98] transition-transform"
+              style={{ borderRadius: 16, border: '1.5px solid #D4E0FF' }}
             >
-              <div style={{ padding: '14px 16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#2D6BFF', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Optimization Mission</span>
-                  <span style={{
-                    fontSize: 9, fontWeight: 700, color: 'white', backgroundColor: '#2D6BFF',
-                    padding: '1px 5px', borderRadius: 4, letterSpacing: '0.04em', textTransform: 'uppercase',
-                  }}>NEW</span>
+              <div style={{ padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {/* Icon */}
+                <div style={{
+                  width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                  background: 'linear-gradient(135deg, #2D6BFF 0%, #1a3570 100%)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(45,107,255,0.30)',
+                }}>
+                  {/* Smart payment routing: card + spark */}
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="1" y="5" width="14" height="10" rx="2" stroke="white" strokeWidth="1.5" />
+                    <path d="M1 9h14" stroke="white" strokeWidth="1.5" />
+                    <path d="M18 2l.8 1.6L20.5 4l-1.7.5L18 6l-.8-1.5L15.5 4l1.7-.5L18 2z" fill="white" />
+                    <path d="M19 11l.6 1.2 1.4.4-1.4.4L19 14.5l-.6-1.5L17 12.6l1.4-.4L19 11z" fill="rgba(255,255,255,0.6)" />
+                  </svg>
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#0E1116', marginBottom: 3 }}>
-                  Smarter way to pay your electricity bill
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 12, color: '#6B7280' }}>Earn 444 pts · buffer protected</span>
-                  <span style={{ fontSize: 12, color: '#3CCB7F', fontWeight: 600 }}>↑ on track</span>
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#2D6BFF', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Optimization Mission</span>
+                    <span style={{
+                      fontSize: 9, fontWeight: 700, color: 'white', backgroundColor: '#2D6BFF',
+                      padding: '1px 5px', borderRadius: 4, letterSpacing: '0.04em', textTransform: 'uppercase',
+                    }}>NEW</span>
+                  </div>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: '#0E1116', marginBottom: 4 }}>
+                    Smarter way to pay your electricity bill
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{
+                      fontSize: 11, color: '#2D6BFF', backgroundColor: '#EEF3FF',
+                      padding: '2px 7px', borderRadius: 9999, fontWeight: 500,
+                    }}>444 pts</span>
+                    <span style={{
+                      fontSize: 11, color: '#6B7280', backgroundColor: '#F4F6FA',
+                      padding: '2px 7px', borderRadius: 9999, fontWeight: 500,
+                    }}>buffer safe</span>
+                    <span style={{ fontSize: 11, color: '#3CCB7F', fontWeight: 600 }}>↑ on track</span>
+                  </div>
+                </div>
+                {/* Chevron */}
+                <div style={{ alignSelf: 'center', flexShrink: 0 }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 4l4 4-4 4" stroke="#9AA3B2" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
               </div>
             </button>
@@ -252,21 +283,54 @@ export default function HomeTab({ onStartFlowA, onStartFlowB }: HomeTabProps) {
           <div style={{ animation: 'notifBounce 0.5s cubic-bezier(0.22,1,0.36,1) forwards 0.32s', opacity: 0 }}>
             <button
               onClick={onStartFlowB}
-              className="w-full text-left bg-card shadow-card active:scale-[0.99] transition-transform"
-              style={{ borderRadius: '0 16px 16px 0', border: '1px solid #E5E9F0', borderLeftColor: '#FF6B2B', borderLeftWidth: 3 }}
+              className="w-full text-left bg-card shadow-card active:scale-[0.98] transition-transform"
+              style={{ borderRadius: 16, border: '1.5px solid #FFD4BB' }}
             >
-              <div style={{ padding: '14px 16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#FF6B2B', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Idle Cash Detected</span>
-                  <span style={{
-                    fontSize: 9, fontWeight: 700, color: 'white', backgroundColor: '#FF6B2B',
-                    padding: '1px 5px', borderRadius: 4, letterSpacing: '0.04em', textTransform: 'uppercase',
-                  }}>$3,200</span>
+              <div style={{ padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {/* Icon */}
+                <div style={{
+                  width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                  background: 'linear-gradient(135deg, #FF6B2B 0%, #c94d15 100%)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(255,107,43,0.30)',
+                }}>
+                  {/* Growing money: bar chart + up arrow */}
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="2" y="13" width="3.5" height="6" rx="1" fill="rgba(255,255,255,0.5)" />
+                    <rect x="7" y="9"  width="3.5" height="10" rx="1" fill="rgba(255,255,255,0.75)" />
+                    <rect x="12" y="5" width="3.5" height="14" rx="1" fill="white" />
+                    <path d="M18 7V3m0 0l-2 2m2-2l2 2" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#0E1116', marginBottom: 3 }}>
-                  Your idle cash could earn $155–$169/yr
-                </p>
-                <p style={{ fontSize: 12, color: '#6B7280' }}>Sitting in checking for 45 days · no risk options</p>
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#FF6B2B', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Idle Cash Detected</span>
+                    <span style={{
+                      fontSize: 9, fontWeight: 700, color: 'white', backgroundColor: '#FF6B2B',
+                      padding: '1px 5px', borderRadius: 4, letterSpacing: '0.04em', textTransform: 'uppercase',
+                    }}>$3,200</span>
+                  </div>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: '#0E1116', marginBottom: 4 }}>
+                    Your idle cash could earn $155–$169/yr
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{
+                      fontSize: 11, color: '#FF6B2B', backgroundColor: '#FFF1EB',
+                      padding: '2px 7px', borderRadius: 9999, fontWeight: 500,
+                    }}>4.85%+ APY</span>
+                    <span style={{
+                      fontSize: 11, color: '#6B7280', backgroundColor: '#F4F6FA',
+                      padding: '2px 7px', borderRadius: 9999, fontWeight: 500,
+                    }}>no risk</span>
+                  </div>
+                </div>
+                {/* Chevron */}
+                <div style={{ alignSelf: 'center', flexShrink: 0 }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 4l4 4-4 4" stroke="#9AA3B2" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
               </div>
             </button>
           </div>
