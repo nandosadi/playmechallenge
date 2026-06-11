@@ -1,26 +1,35 @@
 'use client'
 
+import { Bank, TrendUp, PiggyBank, Bell, Shield, Palette, Link, Question, CaretRight } from '@phosphor-icons/react'
+
+function AccountIcon({ type }: { type: string }) {
+  if (type === 'Checking')          return <Bank size={18} weight="fill" color="#2D6BFF" />
+  if (type.includes('HYSA'))        return <TrendUp size={18} weight="fill" color="#1A7A47" />
+  return <PiggyBank size={18} weight="fill" color="#9AA3B2" />
+}
+
+function SettingIcon({ label }: { label: string }) {
+  const p = { size: 18, weight: 'fill' as const, color: '#6B7280' }
+  if (label === 'Notifications')   return <Bell {...p} />
+  if (label === 'Security')        return <Shield {...p} />
+  if (label === 'Appearance')      return <Palette {...p} />
+  if (label === 'Linked accounts') return <Link {...p} />
+  return <Question {...p} />
+}
+
 const ACCOUNTS_LIST = [
-  { name: 'Chase Checking',    balance: '$4,210',  icon: '🏦', type: 'Checking' },
-  { name: 'High-Yield Pocket', balance: '$31,400', icon: '📈', type: 'HYSA · 4.85% APY' },
-  { name: 'Savings',           balance: '$12,230', icon: '🏺', type: 'Savings' },
+  { name: 'Chase Checking',    balance: '$4,210',  type: 'Checking' },
+  { name: 'High-Yield Pocket', balance: '$31,400', type: 'HYSA · 4.85% APY' },
+  { name: 'Savings',           balance: '$12,230', type: 'Savings' },
 ]
 
 const SETTINGS_ROWS = [
-  { icon: '🔔', label: 'Notifications',   sub: 'Missions, payments, alerts' },
-  { icon: '🔐', label: 'Security',         sub: 'Face ID, passcode' },
-  { icon: '🎨', label: 'Appearance',       sub: 'Dark mode, text size' },
-  { icon: '🤝', label: 'Linked accounts',  sub: '3 connected' },
-  { icon: '❓', label: 'Help & Support',   sub: 'Chat, FAQ' },
+  { label: 'Notifications',    sub: 'Missions, payments, alerts' },
+  { label: 'Security',         sub: 'Face ID, passcode' },
+  { label: 'Appearance',       sub: 'Dark mode, text size' },
+  { label: 'Linked accounts',  sub: '3 connected' },
+  { label: 'Help & Support',   sub: 'Chat, FAQ' },
 ]
-
-function ChevronIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M6 4L10 8L6 12" stroke="#9AA3B2" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
 export default function AccountTab() {
   return (
@@ -83,9 +92,8 @@ export default function AccountTab() {
                   width: 38, height: 38, borderRadius: 10,
                   backgroundColor: '#F4F6FA',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 17,
                 }}>
-                  {acc.icon}
+                  <AccountIcon type={acc.type} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: 14, fontWeight: 500, color: '#0E1116' }}>{acc.name}</p>
@@ -107,10 +115,10 @@ export default function AccountTab() {
             overflow: 'hidden',
           }}>
             {[
-              { label: 'Active rules',           value: '1 rule enabled' },
-              { label: 'Missions this month',     value: '7 completed' },
-              { label: 'Rewards via PlayMe',      value: '1,280 pts' },
-              { label: 'Est. annual impact',      value: '~$80/yr' },
+              { label: 'Active rules',       value: '1 rule enabled' },
+              { label: 'Optimization wins',  value: '7 this month' },
+              { label: 'Rewards captured',   value: '1,280 pts' },
+              { label: 'Est. annual gain',   value: '~$80/yr' },
             ].map((row, i) => (
               <div key={row.label} style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -140,15 +148,15 @@ export default function AccountTab() {
                   width: 36, height: 36, borderRadius: 9,
                   backgroundColor: '#F4F6FA',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, flexShrink: 0,
+                  flexShrink: 0,
                 }}>
-                  {row.icon}
+                  <SettingIcon label={row.label} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: 14, fontWeight: 500, color: '#0E1116' }}>{row.label}</p>
                   <p style={{ fontSize: 12, color: '#9AA3B2' }}>{row.sub}</p>
                 </div>
-                <ChevronIcon />
+                <CaretRight size={16} weight="bold" color="#9AA3B2" />
               </button>
             ))}
           </div>

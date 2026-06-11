@@ -9,6 +9,7 @@ import CardsTab from '@/components/tabs/CardsTab'
 import AccountTab from '@/components/tabs/AccountTab'
 import FlowA from '@/components/flows/FlowA'
 import FlowB from '@/components/flows/FlowB'
+import MissionAnalytics from '@/components/MissionAnalytics'
 
 type Tab = 'home' | 'activity' | 'cards' | 'account'
 type ActiveFlow = 'A' | 'B' | null
@@ -96,10 +97,11 @@ export default function AppShell() {
   const [ruleEnabled, setRuleEnabled] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
   const [screenKey, setScreenKey] = useState('home')
+  const [showAnalytics, setShowAnalytics] = useState(false)
   const isFirstNavRef = useRef(true)
 
   const inFlow = activeFlow !== null
-  const tabBarVisible = splashDone && !inFlow
+  const tabBarVisible = splashDone && !inFlow && !showAnalytics
 
   // Start a flow
   const startFlow = (flow: 'A' | 'B') => {
@@ -167,6 +169,10 @@ export default function AppShell() {
       {/* Main app (always rendered, hidden behind splash) */}
       {transitionPhase === 'running' ? (
         <TransitionScreen />
+      ) : showAnalytics ? (
+        <AnimatedScreen key="analytics" isNew screenKey="analytics">
+          <MissionAnalytics onBack={() => setShowAnalytics(false)} />
+        </AnimatedScreen>
       ) : inFlow ? (
         // Flow screens — full screen, no tab bar
         <AnimatedScreen key={screenKey} isNew={!isFirstNavRef.current} screenKey={screenKey}>
@@ -178,6 +184,7 @@ export default function AppShell() {
               onBack={goBack}
               onToggleRule={setRuleEnabled}
               onFinish={handleFlowAFinish}
+              onViewAnalytics={() => setShowAnalytics(true)}
             />
           ) : (
             <FlowB
@@ -187,6 +194,7 @@ export default function AppShell() {
               onBack={goBack}
               onSelectProduct={setSelectedProduct}
               onFinish={handleFlowBFinish}
+              onViewAnalytics={() => setShowAnalytics(true)}
             />
           )}
         </AnimatedScreen>

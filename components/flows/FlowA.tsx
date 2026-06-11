@@ -7,6 +7,7 @@ import Toggle from '@/components/ui/Toggle'
 import StepDots from '@/components/ui/StepDots'
 import AnimatedCheck from '@/components/ui/AnimatedCheck'
 import CountUp from '@/components/ui/CountUp'
+import { Clock, ArrowCounterClockwise, ChartBar } from '@phosphor-icons/react'
 
 interface FlowAProps {
   step: number       // 0=Intercept, 1=Logic, 2=Confirm, 3=Outcome
@@ -15,6 +16,7 @@ interface FlowAProps {
   onBack: () => void
   onToggleRule: (val: boolean) => void
   onFinish: () => void
+  onViewAnalytics: () => void
 }
 
 function SectionLabel({ children, centered }: { children: React.ReactNode; centered?: boolean }) {
@@ -34,18 +36,27 @@ function ScreenIntercept({ onNext, onApply }: { onNext: () => void; onApply: () 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <SectionLabel>Purchase intercept</SectionLabel>
+        <SectionLabel>Payment intercept</SectionLabel>
         <h1 className="text-headline-lg text-ink">
-          Before you pay —<br />
-          <span className="text-primary">here's the smarter path.</span>
+          Before you pay,<br />
+          <span className="text-primary">consider this smarter option.</span>
         </h1>
       </div>
 
-      {/* Promo card */}
+      {/* Why now */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#FFF7ED', borderRadius: 10, padding: '12px 14px', border: '1px solid #FFD4BB' }}>
+        <Clock size={16} weight="fill" color="#FF6B2B" style={{ flexShrink: 0, marginTop: 1 }} />
+        <div>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#FF6B2B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>Why now</p>
+          <p style={{ fontSize: 13, color: '#3A4151', lineHeight: 1.45 }}>Your electricity bill is due in 3 days. Paying with your Rewards Card keeps your checking buffer intact and earns 444 points.</p>
+        </div>
+      </div>
+
+      {/* Recommendation */}
       <div className="rounded-lg p-4 bg-primary text-white">
-        <p className="text-label-sm uppercase mb-2" style={{ color: 'rgba(255,255,255,0.7)' }}>System recommendation</p>
-        <p className="text-headline-md font-semibold mb-2">Pay with Rewards Card ending 4821, not your checking account.</p>
-        <p className="text-body-md" style={{ color: 'rgba(255,255,255,0.8)' }}>Earn 3x points on utilities. Keep checking buffer intact. Goal stays on track.</p>
+        <p className="text-label-sm uppercase mb-2" style={{ color: 'rgba(255,255,255,0.7)' }}>PlayMe recommends</p>
+        <p className="text-headline-md font-semibold mb-2">Use your Rewards Card ending in 4821 instead of checking.</p>
+        <p className="text-body-md" style={{ color: 'rgba(255,255,255,0.8)' }}>Earn 3× points on utilities. Keep checking buffer intact. Goal stays on track.</p>
       </div>
 
       {/* Compare grid */}
@@ -53,28 +64,18 @@ function ScreenIntercept({ onNext, onApply }: { onNext: () => void; onApply: () 
         <div className="flex-1 rounded-md border border-hairline bg-canvas p-3">
           <p className="text-label-sm text-muted uppercase mb-2">Your plan</p>
           <p className="text-headline-md text-muted font-bold">Checking</p>
-          <p className="text-body-md text-muted mt-1">Direct debit · $148 / 0 rewards earned / Buffer drops to $4,062</p>
+          <p className="text-body-md text-muted mt-1">Direct debit · $148 / 0 rewards / Buffer drops to $4,062</p>
         </div>
         <div className="flex-1 rounded-md border border-primary-dis bg-soft p-3">
           <p className="text-label-sm text-primary-active uppercase mb-2">Recommended</p>
           <p className="text-headline-md text-primary-active font-bold">Rewards Card</p>
-          <p className="text-body-md text-muted mt-1">3x points · $148 / 444 pts earned / Buffer stays at $4,210</p>
+          <p className="text-body-md text-muted mt-1">3× points · $148 / 444 pts / Buffer stays at $4,210</p>
         </div>
       </div>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-2">
-        {['3x utility points', 'buffer preserved', 'goal on track'].map(tag => (
-          <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-soft text-primary text-label-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
-            {tag}
-          </span>
-        ))}
-      </div>
-
       <div className="flex flex-col gap-3 mt-2">
-        <Button variant="primary" label="See the reasoning" onClick={onNext} />
-        <Button variant="secondary" label="Apply recommendation" onClick={onApply} />
+        <Button variant="primary" label="Apply recommendation" onClick={onApply} />
+        <Button variant="secondary" label="See reasoning first" onClick={onNext} />
       </div>
     </div>
   )
@@ -149,17 +150,17 @@ function ScreenConfirm({ ruleEnabled, onToggleRule, onConfirm, onPayFromChecking
       </Card>
 
       <Card navy>
-        <p className="text-headline-md font-semibold text-white mb-2">Save as rule</p>
-        <p className="text-body-md mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          "Always use my Rewards Card for utility payments when the rewards rate is 2x or higher and checking buffer stays above $1,200."
+        <p className="text-headline-md font-semibold text-white mb-1">Apply this automatically next time?</p>
+        <p className="text-body-md mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          PlayMe will use this rule only when your bills, buffer, and goal timeline stay protected.
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-body-md text-white font-medium">Enable this rule</span>
+          <span className="text-body-md text-white font-medium">Enable rule</span>
           <Toggle enabled={ruleEnabled} onChange={onToggleRule} navyContext />
         </div>
         {ruleEnabled && (
           <p className="text-body-md mt-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Future utility bills will automatically use your Rewards Card. You'll be notified after each action.
+            Future utility bills will auto-route to your Rewards Card. You'll be notified after each action and can reverse any time.
           </p>
         )}
       </Card>
@@ -169,23 +170,31 @@ function ScreenConfirm({ ruleEnabled, onToggleRule, onConfirm, onPayFromChecking
         <Button variant="tertiary" label="Pay from checking instead" onClick={onPayFromChecking} />
       </div>
       <p className="text-body-md text-muted text-center -mt-1">
-        {ruleEnabled ? 'Rule active from next payment · editable anytime in settings' : 'You can set this as a rule after confirming'}
+        {ruleEnabled ? 'Rule applies only when all safety conditions are met · editable anytime' : 'You can set this as a rule after confirming'}
       </p>
     </div>
   )
 }
 
 // Step 3 — Outcome
-function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
+function ScreenOutcome({ onFinish, onViewAnalytics }: { onFinish: () => void; onViewAnalytics: () => void }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-center text-center">
         <div className="mb-4"><AnimatedCheck /></div>
         <div style={{ animation: 'fadeIn 0.3s ease forwards 0.6s', opacity: 0 }}>
-          <SectionLabel centered>Mission complete</SectionLabel>
+          <SectionLabel centered>Recommendation applied</SectionLabel>
         </div>
         <div style={{ animation: 'slideUp 0.35s ease forwards 0.65s', opacity: 0 }}>
           <h1 className="text-headline-lg text-ink">Payment made.<br /><span className="text-primary">Rewards captured.</span></h1>
+        </div>
+      </div>
+
+      {/* Reversibility notice */}
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 0.7s', opacity: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#EBF9F1', borderRadius: 10, padding: '10px 14px', border: '1px solid #A7EFC5' }}>
+          <ArrowCounterClockwise size={14} weight="bold" color="#1A7A47" style={{ flexShrink: 0 }} />
+          <p style={{ fontSize: 12, color: '#1A7A47', lineHeight: 1.4 }}>Electricity bill will be paid with Rewards Card ending 4821. <strong>You can change this anytime before Jun 6.</strong></p>
         </div>
       </div>
 
@@ -194,7 +203,7 @@ function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
           <span className="w-2 h-2 rounded-full bg-success flex-shrink-0" style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.9s', opacity: 0 }} />
           <div>
             <p className="text-headline-md text-ink">+<CountUp to={444} duration={800} delay={900} /> points earned</p>
-            <p className="text-body-md text-muted">~$6.66 value · 3x on utilities</p>
+            <p className="text-body-md text-muted">~$6.66 value · 3× on utilities</p>
           </div>
         </Card>
       </div>
@@ -203,11 +212,11 @@ function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
         <Card>
           <p className="text-label-sm text-muted uppercase mb-1">Payment summary</p>
           {[
-            { label: 'Electricity · Jun 3', value: '$148.00',          variant: 'mono'    as const },
+            { label: 'Electricity · Jun 3', value: '$148.00',             variant: 'mono'    as const },
             { label: 'Paid with',           value: 'Rewards Card · 4821', variant: 'default' as const },
-            { label: 'Points earned',       value: '444 pts',          variant: 'primary' as const },
-            { label: 'Checking buffer',     value: '$4,210 · intact',  variant: 'default' as const },
-            { label: 'Down payment goal',   value: 'On track ↑',       variant: 'green'   as const },
+            { label: 'Points earned',       value: '444 pts',             variant: 'primary' as const },
+            { label: 'Checking buffer',     value: '$4,210 · intact',     variant: 'default' as const },
+            { label: 'Down payment goal',   value: 'On track ↑',          variant: 'green'   as const },
           ].map((row, i) => (
             <ARow key={row.label} delay={0.9 + i * 0.06}>
               <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 4} />
@@ -220,9 +229,9 @@ function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
         <Card>
           <p className="text-label-sm text-muted uppercase mb-1">Running totals · this month</p>
           {[
-            { label: 'Total points via PlayMe',   value: '1,280 pts',  variant: 'primary' as const },
-            { label: 'Est. annual rewards value', value: '~$80',       variant: 'primary' as const },
-            { label: 'Optimization missions run', value: '7 this month', variant: 'default' as const },
+            { label: 'Optimization wins',         value: '7 this month', variant: 'default' as const },
+            { label: 'Rewards captured',          value: '1,280 pts',   variant: 'primary' as const },
+            { label: 'Est. annual gain',          value: '~$80/yr',     variant: 'primary' as const },
           ].map((row, i) => (
             <ARow key={row.label} delay={1.15 + i * 0.06}>
               <Row label={row.label} value={row.value} valueVariant={row.variant} noBorder={i === 2} />
@@ -231,19 +240,33 @@ function ScreenOutcome({ onFinish }: { onFinish: () => void }) {
         </Card>
       </div>
 
-      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.35s', opacity: 0 }}>
+      {/* Mission analytics entry */}
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.3s', opacity: 0 }}>
+        <button onClick={onViewAnalytics} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#EEF3FF', borderRadius: 12, padding: '12px 16px', border: '1px solid #B9CCFF' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ChartBar size={16} weight="fill" color="#2D6BFF" />
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#2D6BFF' }}>View mission performance</p>
+              <p style={{ fontSize: 11, color: '#6B7280' }}>See how PlayMe improved your goal progress</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#2D6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+      </div>
+
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.4s', opacity: 0 }}>
         <Button variant="primary" label="Back to home" onClick={onFinish} />
       </div>
     </div>
   )
 }
 
-export default function FlowA({ step, ruleEnabled, onNext, onBack, onToggleRule, onFinish }: FlowAProps) {
+export default function FlowA({ step, ruleEnabled, onNext, onBack, onToggleRule, onFinish, onViewAnalytics }: FlowAProps) {
   const screens = [
     <ScreenIntercept key="intercept" onNext={onNext} onApply={onNext} />,
     <ScreenLogic key="logic" onApply={onNext} onSetRule={onNext} />,
     <ScreenConfirm key="confirm" ruleEnabled={ruleEnabled} onToggleRule={onToggleRule} onConfirm={onNext} onPayFromChecking={onNext} />,
-    <ScreenOutcome key="outcome" onFinish={onFinish} />,
+    <ScreenOutcome key="outcome" onFinish={onFinish} onViewAnalytics={onViewAnalytics} />,
   ]
 
   return (

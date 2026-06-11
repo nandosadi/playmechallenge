@@ -6,11 +6,12 @@ import Row from '@/components/ui/Row'
 import StepDots from '@/components/ui/StepDots'
 import AnimatedCheck from '@/components/ui/AnimatedCheck'
 import CountUp from '@/components/ui/CountUp'
+import { Clock, ArrowCounterClockwise, ChartBar } from '@phosphor-icons/react'
 
 const PRODUCTS = [
-  { id: 'hysa', name: 'High-Yield Savings', rate: '4.85%', liquidity: 'Instant',   liquidityVariant: 'green' as const, risk: 'No risk', protection: 'FDIC insured', note: 'Fully liquid any time. Best for cash you might need soon.', annual: 155.20 },
-  { id: 'cd',   name: 'No-Penalty CD',      rate: '5.10%', liquidity: '7-day exit', liquidityVariant: 'amber' as const, risk: 'No risk', protection: 'FDIC insured', note: 'Slightly better rate. Exit after 7 days with no penalty.', annual: 163.20 },
-  { id: 'tbill',name: 'T-Bill (3-month)',   rate: '5.28%', liquidity: 'Locked 90d', liquidityVariant: 'red'   as const, risk: 'No risk', protection: "Gov't backed",  note: 'Best rate. US government backed. Locked until Sep 1.',    annual: 168.96 },
+  { id: 'hysa', name: 'High-Yield Savings', rate: '4.85%', liquidity: 'Instant',   liquidityVariant: 'green' as const, risk: 'FDIC-insured', protection: 'Fully liquid', note: 'Fully liquid any time. Best for cash you might need soon.', annual: 155.20 },
+  { id: 'cd',   name: 'No-Penalty CD',      rate: '5.10%', liquidity: '7-day exit', liquidityVariant: 'amber' as const, risk: 'FDIC-insured', protection: 'Exit after 7d', note: 'Slightly better rate. Exit after 7 days with no penalty.', annual: 163.20 },
+  { id: 'tbill',name: 'T-Bill (3-month)',   rate: '5.28%', liquidity: 'Locked 90d', liquidityVariant: 'red'   as const, risk: "Gov't backed",  protection: 'Locked 90 days', note: 'Best rate. US Treasury backed. Locked until Sep 1. Not a bank deposit.', annual: 168.96 },
 ]
 const AMOUNT = 3200
 const liquidityColors = {
@@ -26,6 +27,7 @@ interface FlowBProps {
   onBack: () => void
   onSelectProduct: (id: string) => void
   onFinish: () => void
+  onViewAnalytics: () => void
 }
 
 function SectionLabel({ children, centered }: { children: React.ReactNode; centered?: boolean }) {
@@ -42,8 +44,17 @@ function ScreenAnalysis({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <SectionLabel>Idle cash analysis</SectionLabel>
+        <SectionLabel>Opportunity detected</SectionLabel>
         <h1 className="text-headline-lg text-ink"><span className="text-primary">$3,200 sitting still</span><br />for 45 days.</h1>
+      </div>
+
+      {/* Why now */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, backgroundColor: '#FFF7ED', borderRadius: 10, padding: '12px 14px', border: '1px solid #FFD4BB' }}>
+        <Clock size={16} weight="fill" color="#FF6B2B" style={{ flexShrink: 0, marginTop: 1 }} />
+        <div>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#FF6B2B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>Why now</p>
+          <p style={{ fontSize: 13, color: '#3A4151', lineHeight: 1.45 }}>Your upcoming bills are covered, and $3,200 has been sitting in checking for 45 days. Moving it now puts it to work before your next billing cycle.</p>
+        </div>
       </div>
 
       <Card>
@@ -75,7 +86,7 @@ function ScreenAnalysis({ onNext }: { onNext: () => void }) {
         <Row label="Safely moveable" value="$3,200" valueVariant="primary" noBorder />
       </Card>
 
-      <Button variant="primary" label="See where it could go" onClick={onNext} />
+      <Button variant="primary" label="Choose where to move it" onClick={onNext} />
     </div>
   )
 }
@@ -112,8 +123,8 @@ function ScreenChoose({ selectedProduct, onSelect, onNext }: { selectedProduct: 
             </div>
             <div className="flex flex-wrap gap-1.5 mb-2">
               <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: liqColors.bg, color: liqColors.text }}>{product.liquidity}</span>
-              <span className="px-2 py-0.5 rounded-full text-label-sm bg-hairline-soft text-muted">{product.risk}</span>
-              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: '#EBF9F1', color: '#1A7A47' }}>{product.protection}</span>
+              <span className="px-2 py-0.5 rounded-full text-label-sm" style={{ backgroundColor: '#EBF9F1', color: '#1A7A47' }}>{product.risk}</span>
+              <span className="px-2 py-0.5 rounded-full text-label-sm bg-hairline-soft text-muted">{product.protection}</span>
             </div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-body-md text-muted">Est. gain on $3,200/yr</span>
@@ -158,8 +169,9 @@ function ScreenConfirm({ selectedProduct, onConfirm, onChangeProduct }: { select
         <Row label="Product" value={product.name} />
         <Row label="APY" value={product.rate} valueVariant="primary" />
         <Row label="Liquidity" value={product.liquidity} />
-        <Row label="Protected by" value={product.protection} />
-        <Row label="Checking after" value="$1,010 · bills covered" valueVariant="primary" noBorder />
+        <Row label="Protection" value={product.risk} />
+        <Row label="Checking after move" value="$1,010 · bills covered" valueVariant="primary" />
+        <Row label="Buffer remaining" value="$1,010 · rent + bills covered" valueVariant="green" noBorder />
       </Card>
 
       <Card className="bg-soft border-0">
@@ -189,7 +201,7 @@ function ScreenConfirm({ selectedProduct, onConfirm, onChangeProduct }: { select
 }
 
 // Step 3 — Outcome
-function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string | null; onFinish: () => void }) {
+function ScreenOutcome({ selectedProduct, onFinish, onViewAnalytics }: { selectedProduct: string | null; onFinish: () => void; onViewAnalytics: () => void }) {
   const product = PRODUCTS.find(p => p.id === selectedProduct) || PRODUCTS[0]
   const annualInt = Math.round(product.annual)
 
@@ -202,6 +214,14 @@ function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string 
         </div>
         <div style={{ animation: 'slideUp 0.35s ease forwards 0.65s', opacity: 0 }}>
           <h1 className="text-headline-lg text-ink">Your money is<br /><span className="text-primary">working now.</span></h1>
+        </div>
+      </div>
+
+      {/* Reversibility notice */}
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 0.7s', opacity: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#EBF9F1', borderRadius: 10, padding: '10px 14px', border: '1px solid #A7EFC5' }}>
+          <ArrowCounterClockwise size={14} weight="bold" color="#1A7A47" style={{ flexShrink: 0 }} />
+          <p style={{ fontSize: 12, color: '#1A7A47', lineHeight: 1.4 }}>$3,200 placed in {product.name}. <strong>Reversible per product terms. Checking buffer: $1,010 · rent covered.</strong></p>
         </div>
       </div>
 
@@ -247,19 +267,33 @@ function ScreenOutcome({ selectedProduct, onFinish }: { selectedProduct: string 
         </Card>
       </div>
 
-      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.35s', opacity: 0 }}>
+      {/* Mission analytics entry */}
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.3s', opacity: 0 }}>
+        <button onClick={onViewAnalytics} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#EEF3FF', borderRadius: 12, padding: '12px 16px', border: '1px solid #B9CCFF' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ChartBar size={16} weight="fill" color="#2D6BFF" />
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: '#2D6BFF' }}>View mission performance</p>
+              <p style={{ fontSize: 11, color: '#6B7280' }}>See how this move improved your goal progress</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="#2D6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+      </div>
+
+      <div style={{ animation: 'fadeIn 0.3s ease forwards 1.4s', opacity: 0 }}>
         <Button variant="primary" label="Back to home" onClick={onFinish} />
       </div>
     </div>
   )
 }
 
-export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectProduct, onFinish }: FlowBProps) {
+export default function FlowB({ step, selectedProduct, onNext, onBack, onSelectProduct, onFinish, onViewAnalytics }: FlowBProps) {
   const screens = [
     <ScreenAnalysis key="analysis" onNext={onNext} />,
     <ScreenChoose key="choose" selectedProduct={selectedProduct} onSelect={onSelectProduct} onNext={onNext} />,
     <ScreenConfirm key="confirm" selectedProduct={selectedProduct} onConfirm={onNext} onChangeProduct={onBack} />,
-    <ScreenOutcome key="outcome" selectedProduct={selectedProduct} onFinish={onFinish} />,
+    <ScreenOutcome key="outcome" selectedProduct={selectedProduct} onFinish={onFinish} onViewAnalytics={onViewAnalytics} />,
   ]
 
   return (
